@@ -1,16 +1,16 @@
 <!-- Side widgets-->
 <div class="col-lg-4">
-    <!-- Search widget
+    <!-- Search widget -->
     <div class="card mb-4">
-        <div class="card-header">Search</div>
+        <div class="card-header">店名から検索</div>
         <div class="card-body">
-            <div class="input-group">
-                <input class="form-control" type="text" placeholder="Enter search term..."
-                    aria-label="Enter search term..." aria-describedby="button-search" />
-                <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-            </div>
+            <form action="{% url 'foodblog:search' %}" method="GET" class="input-group">
+                <input class="form-control" type="search" name="q" placeholder="ここに入力してください"
+                    aria-label="店名から" aria-describedby="button-search" />
+                <button class="btn btn-primary" id="button-search" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </form>
         </div>
-    </div> -->
+    </div>
     <!-- Categories widget-->
     <div class="card mb-4">
         <div class="card-header">ジャンルから検索</div>

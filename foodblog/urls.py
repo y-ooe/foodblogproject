@@ -16,4 +16,6 @@ urlpatterns = [
     path('station-list/<int:station>', views.StationListView.as_view(),name='station_list'),
     path('mypage/', views.MypageView.as_view(), name='mypage'),
 
+    path('search/', views.SearchShopView.as_view(), name='search'),
+
 ]

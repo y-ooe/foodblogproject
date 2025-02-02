@@ -6,11 +6,11 @@ from django.views import View
 import requests, json
 from django.db.models import Count, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.serializers.json import DjangoJSONEncoder
-from django.http import JsonResponse
 
 from .models import Shop, Genre, Station, Favorite, Comment
 from .forms import CommentForm
+from foodblogproject.settings import HOTPEPPER_API_KEY
+
 
 
 class SideDataMixin:
@@ -78,7 +78,7 @@ class ShopDetailView(SideDataMixin, DetailView):
             return self.render_to_response(context)
 
 class GenreListView(SideDataMixin, ListView):
-    template_name = 'index.html' # index.htmlをレンダリング
+    template_name = 'search_result.html' # index.htmlをレンダリング
 
     context_object_name = 'shops' # テンプレート内でのオブジェクト名
     paginate_by = 10 # 1ページに表示する件数
@@ -89,9 +89,15 @@ class GenreListView(SideDataMixin, ListView):
         genres = Shop.objects.filter(
             genre = genre_id).order_by('id')
         return genres
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        genre = get_object_or_404(Genre, id=self.kwargs['genre'])
+        context['query'] = genre.name
+        return context
 
 class StationListView(SideDataMixin, ListView):
-    template_name = 'index.html' # index.htmlをレンダリング
+    template_name = 'search_result.html' # index.htmlをレンダリング
 
     context_object_name = 'shops' # テンプレート内でのオブジェクト名
     paginate_by = 10 # 1ページに表示する件数
@@ -102,6 +108,32 @@ class StationListView(SideDataMixin, ListView):
         stations = Shop.objects.filter(
             station = station_id).order_by('id')
         return stations
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        station = get_object_or_404(Station, id=self.kwargs['station'])
+        context['query'] = station.name + '駅'
+        return context
+
+class SearchShopView(SideDataMixin, ListView):
+    template_name = 'search_result.html'
+    model = Shop
+    context_object_name = 'shops'  # テンプレート内で使うオブジェクト名
+    paginate_by = 10  # ページネーション
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')  # 検索キーワードを取得
+        if query:
+            # 店名に部分一致するデータをフィルタリング
+            queryset = queryset.filter(name__icontains=query)
+        return queryset
+
+    # 追加のコンテキストデータを提供
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q')  # 検索キーワードを渡す
+        return context
 
 class AddFavoriteView(LoginRequiredMixin, View):
     def post(self, request, shop_id):
@@ -115,10 +147,9 @@ class AddFavoriteView(LoginRequiredMixin, View):
         # お店の詳細ページへリダイレクト
         return redirect('foodblog:shop_detail', pk=shop.id)
 
-
 class RemoveFavoriteView(LoginRequiredMixin, View):
     def post(self, request, shop_id):
-        # お店のインスタンスを取得
+
         shop = get_object_or_404(Shop, id=shop_id)
 
         # ユーザーのお気に入りから削除
@@ -137,20 +168,22 @@ class MypageView(ListView):
     def get_queryset(self):
         return Shop.objects.filter(favorite__user=self.request.user).order_by('-created_at')
 
+
 def fetch_and_save_shops():
-    API_KEY = '982cfe3c211cb938'
     URL = "https://webservice.recruit.co.jp/hotpepper/gourmet/v1/"
     params = {
-        "key": API_KEY,
+        "key": HOTPEPPER_API_KEY,
         "large_area": "Z091",  # 福岡エリア
         "format": "json",
         "order": 4,  # レビュー件数順
-        "start": 151,  # 1ページ目から取得
+        "start": 551,  # 1ページ目から取得
         "count": 50,  # 最大50件取得
-        "genre": "G004,G006,G008",  
+        "genre": "G005,G007,G013",  
         #済 5,7,13:500  
         #済 14,16,17:500 
-        #済 4,6,8:200
+        #済 4,6,8:550
+        #済 3,10,15:450
+
 
     }
 
