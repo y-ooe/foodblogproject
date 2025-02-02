@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Registration Complate{% endblock %} 
+
+{% block content %}
+<div class="container">
+    <!-- 行の配置 -->
+    <div class="row">
+        <!-- 列の余白にoffset-4を入れる,列の上下パディングはpy-4 -->
+        <div class="col offset-4 py-4">
+            <h3>登録が完了しました</h3>
+            <p><a href="{% url 'accounts:login' %}">ログインはこちら</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

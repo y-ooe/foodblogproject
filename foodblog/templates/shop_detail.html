@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ shop.name }} | 食べログ風{% endblock %}
+
+{% block content %}
+<!-- ページ全体のコンテナ -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- メインコンテンツ（お店の詳細） -->
+        <div class="col-lg-8">
+            <article>
+                <!-- 店名 -->
+                <h1 class="fw-bold">{{ shop.name }}</h1>
+
+                <!-- ジャンルと駅 -->
+                <div class="mb-3">
+                    <a class="badge bg-secondary text-decoration-none"
+                        href="{% url 'foodblog:genre_list' genre=shop.genre.id %}">
+                        {{ shop.genre.name }}
+                    </a>
+                    {% if shop.subgenre %}
+                    <span class="badge bg-secondary">{{ shop.subgenre }}</span>
+                    {% endif %}
+                    <a class="badge bg-primary text-decoration-none"
+                        href="{% url 'foodblog:station_list' station=shop.station.id %}">
+                        {{ shop.station.name }}駅
+                    </a>
+                </div>
+
+                <!-- 店舗画像 -->
+                <figure class="mb-4">
+                    <img src="{{ shop.photo_large }}" class="img-fluid rounded" alt="{{ shop.name }}">
+                </figure>
+
+                <!-- キャッチコピー -->
+                <h3 class="fs-4 text-muted">{{ shop.catch }}</h3>
+
+                <!-- 店舗情報（カードデザイン） -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">店舗情報</h5>
+                        <p class="mb-1"><strong>住所:</strong> {{ shop.address }}</p>
+                        <p class="mb-1"><strong>エリア:</strong> {{ shop.middle_area }}</p>
+                        <p class="mb-1"><strong>アクセス:</strong> {{ shop.access }}</p>
+                        <p><strong>営業時間:</strong> {{ shop.business_hours }}</p>
+                    </div>
+                </div>
+
+                <!-- お気に入りボタン -->
+                {% if request.user.is_authenticated %}
+                <form method="post"
+                    action="{% if is_favorite %}{% url 'foodblog:remove_favorite' shop_id=shop.id %}{% else %}{% url 'foodblog:add_favorite' shop_id=shop.id %}{% endif %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="btn {% if is_favorite %}btn-danger{% else %}btn-warning{% endif %} w-100">
+                        <i class="fas fa-bookmark"></i> {% if is_favorite %}お気に入り解除{% else %}お気に入り追加{% endif %}
+                    </button>
+                </form>
+                {% else %}
+                <p class="text-muted">ログインすると、お気に入り登録できます。</p>
+                {% endif %}
+
+                <!-- コメントセクション -->
+                <!-- コメントセクション -->
+                <section class="mt-5">
+                    <h3 class="fw-bold mb-4">口コミ・コメント</h3>
+
+                    <div class="card bg-light p-3">
+                        <div class="card-body">
+                            <!-- コメント投稿フォーム -->
+                            {% if request.user.is_authenticated %}
+                            <h5 class="fw-bold">コメントを投稿する</h5>
+                            <form method="POST" class="mb-4">
+                                {% csrf_token %}
+                                {{ comment_form.as_p }}
+                                <button type="submit" class="btn btn-primary">投稿</button>
+                            </form>
+                            {% else %}
+                            <p class="text-muted">ログインすると、コメントを投稿できます。</p>
+                            {% endif %}
+
+                            <hr>
+
+                            <!-- 投稿されたコメント一覧 -->
+                            {% if comments %}
+                            {% for comment in comments %}
+                            <div class="d-flex mb-4 p-3 border rounded bg-white">
+                                <!-- 投稿者アイコン -->
+                                <div class="flex-shrink-0">
+                                    <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
+                                        alt="ユーザー">
+                                </div>
+
+                                <!-- コメント内容 -->
+                                <div class="ms-3 w-100">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <p class="fw-bold mb-0">{{ comment.user }}</p>
+                                            <small class="text-muted">{{ comment.created_at|date:"Y年m月d日 H:i" }}</small>
+                                        </div>
+                                    </div>
+                                    <p class="mt-2">{{ comment.content }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <p class="text-muted">まだコメントはありません。</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+
+            </article>
+        </div>
+
+        <!-- サイドバー -->
+        {% include 'side.html' %}
+    </div>
+</div>
+{% endblock %}

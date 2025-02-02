@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}マイページ{% endblock %}
+
+    {% block content %}
+    <div class="container py-5">
+        <h1 class="text-center mb-4">お気に入り一覧</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+
+                {% for shop in favorite_shops %}
+                <!-- お気に入り店舗のカード -->
+                <div class="favorite-card d-flex">
+                    <!-- 左側：お店の画像 -->
+                    <div style="flex: 0 0 30%; max-width: 30%;">
+                        <img src="{{ shop.photo_medium }}" alt="店舗画像" class="img-fluid">
+                    </div>
+                    <!-- 右側：お店の情報 -->
+                    <div class="favorite-card-body">
+                        <p></p>
+                        <h5 class="card-title">
+                            {{shop.name}}
+                        </h5>
+                        <p class="card-text mb-1">
+                            {{shop.address}}
+                        </p>
+                        <p class="card-text mb-1">
+                            {{shop.bussiness_hours}}
+                        </p>
+                        <p class="card-text">
+                            {{shop.access}}
+                        </p>
+                        <a href="{% url 'foodblog:shop_detail' shop.pk %}" class="btn btn-primary btn-sm">詳細を見る</a>
+
+                    </div>
+                </div>
+                <p></p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+

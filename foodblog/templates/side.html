@@ -1,0 +1,56 @@
+<!-- Side widgets-->
+<div class="col-lg-4">
+    <!-- Search widget
+    <div class="card mb-4">
+        <div class="card-header">Search</div>
+        <div class="card-body">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Enter search term..."
+                    aria-label="Enter search term..." aria-describedby="button-search" />
+                <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+            </div>
+        </div>
+    </div> -->
+    <!-- Categories widget-->
+    <div class="card mb-4">
+        <div class="card-header">ジャンルから検索</div>
+        <div class="card-body">
+            <div class="row">
+                {% for genre in genres %}
+                <div class="col-6 col-md-6 col-lg-6" style="padding-left: 5px; padding-right: 5px;"> <!-- padding調整 -->
+                    <ul class="list-unstyled mb-0" style="margin-bottom: 0;"> <!-- margin削除 -->
+                        <li><a href="{% url 'foodblog:genre_list' genre=genre.id %}">
+                                {{ genre.name }}
+                            </a></li>
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">最寄り駅から検索</div>
+        <div class="card-body">
+            <div class="row" id="stations-list">
+                {% for station in stations %}
+                <div class="col-6 col-md-6 col-lg-6" style="padding-left: 5px; padding-right: 5px;">
+                    <ul class="list-unstyled mb-0" style="margin-bottom: 0;">
+                        <li>
+                            <a href="{% url 'foodblog:station_list' station=station.id %}">
+                                {{ station.name }} ({{ station.shop_count }})
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- 「すべて表示」ボタン -->
+            {% if stations|length < all_stations_json|length %} <br>
+                <button class="btn btn-primary" id="show-more">すべて表示</button>
+                {% endif %}
+        </div>
+    </div>
+</div>
+<script>
+    var stationListUrlPrefix = "{% url 'foodblog:station_list' station=0 %}".slice(0, -2); // URLの末尾 "/0" を削除
+</script>

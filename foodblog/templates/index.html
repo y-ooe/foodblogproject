@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}HOME{% endblock %}
+
+{% block content %}
+<!-- Page content-->
+<div class="container">
+    <div class="row">
+        <!-- Blog entries-->
+        <div class="col-lg-8">
+            <!-- Featured blog post-->
+            <!-- <div class="card mb-4">
+                <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg"
+                        alt="..." /></a>
+                <div class="card-body">
+                    <div class="small text-muted">January 1, 2023</div>
+                    <h2 class="card-title">Featured Post Title</h2>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid
+                        atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero
+                        voluptate voluptatibus possimus, veniam magni quis!</p>
+                    <a class="btn btn-primary" href="#!">Read more →</a>
+                </div>
+            </div> -->
+            <!-- Nested row for non-featured blog posts-->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% for shop in shops %}
+                <div class="col-lg-6">
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <a href="#!"><img src="{{ shop.photo_large }}" class="bd-placeholder-img card-img-top mb-0"
+                                width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img"
+                                aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" /></a>
+                        <div class="card-body">
+                            <!-- ジャンルと駅を囲む枠 -->
+                            <div class="mb-2">
+                                <a class="badge bg-secondary text-decoration-none" 
+                                    href="{% url 'foodblog:genre_list' genre=shop.genre.id %}">
+                                    {{ shop.genre.name }}
+                                </a>
+                                <a class="badge bg-secondary text-decoration-none"
+                                    href="{% url 'foodblog:station_list' station=shop.station.id %}">
+                                    {{ shop.station.name }}駅
+                                </a>
+                            </div>
+
+                            <!-- お店の名前 -->
+                            <h2 class="card-title h4">{{ shop.name }}</h2>
+
+                            <!-- キャッチコピー -->
+                            <p class="card-text">{{ shop.catch }}</p>
+
+                            <!-- 営業時間 -->
+                            <p>{{ shop.bussiness_hours }}</p>
+
+                            <!-- 詳細ボタン -->
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    onclick="location.href='{% url 'foodblog:shop_detail' shop.pk %}'">
+                                    詳細を見る
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% include 'pagination.html' %}
+        </div>
+        {% include 'side.html' %}
+    </div>
+</div>
+{% endblock %}
