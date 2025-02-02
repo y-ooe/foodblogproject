@@ -176,7 +176,7 @@ def fetch_and_save_shops():
         "large_area": "Z091",  # 福岡エリア
         "format": "json",
         "order": 4,  # レビュー件数順
-        "start": 551,  # 1ページ目から取得
+        "start": 601,  # 1ページ目から取得
         "count": 50,  # 最大50件取得
         "genre": "G005,G007,G013",  
         #済 5,7,13:500  

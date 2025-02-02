@@ -19,20 +19,12 @@
 
                         {{field}}
 
-                        {% if field.help_text %}
-                            <small style="color: grey">
-                                {{ field.help_text }}
-                            </small>
-                        {% endif %}
 
                         {% for error in field.errors %}
                             <p style="color: red">{{ error }}</p>
                         {% endfor %}
                     </p>
                     {% endfor %}
-                    <p style="color: red">
-                        ※メールアドレスはパスワードをリセットする際に必要になりますので、登録をお願いします。
-                    </p>
                     <!-- サインアップボタンの出力 -->
                     <input type="submit" value="Sign up">
                 </form>
